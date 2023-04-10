@@ -22,17 +22,6 @@ const params = [
     },
   },
   {
-    id: "velocity_divider",
-    name: "Velocity Divider",
-    type: "number",
-    //default: Math.PI,
-    options: {
-      min: 2,
-      max: 10,
-      step: 0.1,
-    },
-  },
-  {
     id: "direction_change",
     name: "Direction Change",
     type: "number",
@@ -108,7 +97,7 @@ const params = [
     type: "number",
     //default: Math.PI,
     options: {
-      min: 0.1,
+      min: 1,
       max: 5,
       step: 0.1,
     },

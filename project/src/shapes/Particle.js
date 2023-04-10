@@ -1,4 +1,4 @@
-import { FXRandomBetween, FXRandomBool } from "../utils/fxrandHelper";
+import { FXRandomBetween } from "../utils/fxrandHelper";
 
 class Particle {
   constructor(_loc, _dir, _config, _sketchCanvas) {
@@ -19,19 +19,10 @@ class Particle {
 
     let directionAngle;
 
-    const shouldGo = FXRandomBool(0.9);
+    directionAngle = tan(-angle * 180);
 
-    if (shouldGo) {
-      directionAngle = tan(-angle * 180);
-
-      this.dir.x = atan(-angle * PI * PI * PI);
-      this.dir.y = acos(directionAngle);
-    } else {
-      directionAngle = cos(-angle * 180);
-
-      this.dir.x = tan(-angle * PI * PI * PI);
-      this.dir.y = cos(directionAngle);
-    }
+    this.dir.x = cos(-angle * PI * PI * PI);
+    this.dir.y = cos(directionAngle);
 
     var vel = this.dir.copy();
 
@@ -58,10 +49,6 @@ class Particle {
 
     stroke(this.config.palette.color);
     point(this.loc.x, this.loc.y);
-
-    if (this.config.palette.name === "Wisp") {
-      point(this.loc.x + 1, this.loc.y + 1);
-    }
   }
 }
 

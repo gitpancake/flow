@@ -35,9 +35,7 @@ const palettes = [
   },
 ];
 
-export const generateConfig = (sketchCanvas) => {
-  const finishIn = FXRandomBetween(500, 750);
-
+export const generateConfig = () => {
   const frameRate = FXRandomBetween(30, 200);
 
   const config = {
@@ -48,7 +46,7 @@ export const generateConfig = (sketchCanvas) => {
     },
     directionChange: $fx.getParam("direction_change"),
     speed: $fx.getParam("speed"),
-    velocityDivider: $fx.getParam("velocity_divider"),
+    velocityDivider: FXRandomBetween(0, 4),
     noiseScale: $fx.getParam("noise_scale"),
     noiseStrength: $fx.getParam("noise_strength"),
     borderWidth: 25,
