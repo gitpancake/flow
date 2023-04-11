@@ -21,17 +21,17 @@ const params = [
       step: 1,
     },
   },
-  {
-    id: "direction_change",
-    name: "Direction Change",
-    type: "number",
-    //default: Math.PI,
-    options: {
-      min: 0.5,
-      max: 1.5,
-      step: 0.1,
-    },
-  },
+  // {
+  //   id: "direction_change",
+  //   name: "Direction Change",
+  //   type: "number",
+  //   //default: Math.PI,
+  //   options: {
+  //     min: 0.5,
+  //     max: 1.5,
+  //     step: 0.1,
+  //   },
+  // },
   {
     id: "stroke_weight",
     name: "Stroke Weight",
@@ -44,33 +44,44 @@ const params = [
     },
   },
   {
-    id: "finish_in",
-    name: "Finish In (ms)",
+    id: "line_thickness",
+    name: "Thickness",
     type: "number",
     //default: Math.PI,
     options: {
-      min: 1000,
-      max: 10000,
-      step: 1000,
+      min: 1,
+      max: 7.5,
+      step: 0.5,
     },
   },
+  // {
+  //   id: "finish_in",
+  //   name: "Finish In (ms)",
+  //   type: "number",
+  //   //default: Math.PI,
+  //   options: {
+  //     min: 1000,
+  //     max: 10000,
+  //     step: 1000,
+  //   },
+  // },
   {
     id: "noise_multiplier",
     name: "Noise Multiplier",
     type: "number",
     //default: Math.PI,
     options: {
-      min: 2,
-      max: 20,
-      step: 1,
+      min: 1,
+      max: 5,
+      step: 0.1,
     },
   },
-  {
-    id: "infinite_render",
-    name: "Infinite Render",
-    type: "boolean",
-    //default: true,
-  },
+  // {
+  //   id: "infinite_render",
+  //   name: "Infinite Render",
+  //   type: "boolean",
+  //   //default: true,
+  // },
   //   {
   //     id: "bigint_id",
   //     name: "A bigint",
@@ -82,15 +93,15 @@ const params = [
   //       step: 1,
   //     },
   //   },
-  //   {
-  //     id: "select_id",
-  //     name: "A selection",
-  //     type: "select",
-  //     //default: "pear",
-  //     options: {
-  //       options: ["apple", "orange", "pear"],
-  //     },
-  //   },
+  {
+    id: "color_palette",
+    name: "Palette",
+    type: "select",
+    //default: "pear",
+    options: {
+      options: ["renaissance", "beauties", "blues", "loaders", "garden", "cheeky"],
+    },
+  },
   {
     id: "speed",
     name: "Speed",
@@ -98,16 +109,16 @@ const params = [
     //default: Math.PI,
     options: {
       min: 1,
-      max: 5,
+      max: 10,
       step: 0.1,
     },
   },
-  {
-    id: "color_id",
-    name: "Palette",
-    type: "color",
-    //default: "ff0000",
-  },
+  // {
+  //   id: "color_id",
+  //   name: "Palette",
+  //   type: "color",
+  //   //default: "ff0000",
+  // },
   //   {
   //     id: "boolean_id",
   //     name: "A boolean",
