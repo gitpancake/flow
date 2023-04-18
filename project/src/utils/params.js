@@ -99,7 +99,7 @@ const params = [
     type: "select",
     //default: "pear",
     options: {
-      options: ["renaissance", "beauties", "blues", "loaders", "garden", "cheeky"],
+      options: ["renaissance", "beauties", "blues", "loaders", "garden", "cheeky", "tokyo"],
     },
   },
   {
