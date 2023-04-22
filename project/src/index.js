@@ -1,70 +1,14 @@
-// import { params } from "./utils/params";
+const { generateConfig, staticConfig, colorPalettePicker, getNoiseMultiplier, getCurvature, getActiveLevel, getSpeed, getStrokeWeight, getMood, getBase } = require("./utils/config");
+const { FXRandomIntBetween, FXRandomBool, FXRandomBetween } = require("./utils/fxrandHelper");
+const { params } = require("./utils/params");
+require("p5");
 
-// console.log(fxhash);
-// console.log(fxrand());
-
-// const sp = new URLSearchParams(window.location.search);
-// console.log(sp);
-
-// // this is how to define parameters
-
-// // this is how features can be defined
-// $fx.features({
-//   "A random feature": Math.floor($fx.rand() * 10),
-//   "A random boolean": $fx.rand() > 0.5,
-//   "A random string": ["A", "B", "C", "D"].at(Math.floor($fx.rand() * 4)),
-//   "Feature from params, its a number": $fx.getParam("number_id"),
-// });
-
-// // log the parameters, for debugging purposes, artists won't have to do that
-// console.log("Current param values:");
-// // Raw deserialize param values
-// console.log($fx.getRawParams());
-// // Added addtional transformation to the parameter for easier usage
-// // e.g. color.hex.rgba, color.obj.rgba.r, color.arr.rgb[0]
-// console.log($fx.getParams());
-
-// // how to read a single raw parameter
-// console.log("Single raw value:");
-// console.log($fx.getRawParam("color_id"));
-// // how to read a single transformed parameter
-// console.log("Single transformed value:");
-// console.log($fx.getParam("color_id"));
-
-// // update the document based on the parameters
-// document.body.style.background = $fx.getParam("color_id").hex.rgba;
-// document.body.innerHTML = `
-// <p>
-// url: ${window.location.href}
-// </p>
-// <p>
-// hash: ${$fx.hash}
-// </p>
-// <p>
-// params:
-// </p>
-// <pre>
-// ${$fx.stringifyParams($fx.getRawParams())}
-// </pre>
-// <pre style="color: white;">
-// ${$fx.stringifyParams($fx.getRawParams())}
-// </pre>
-// `;
-
-const { Particle } = require("./shapes/Particle");
-// const { noiseScaleName, speedName, frameRateName, distanceName, noiseMultiplierName, velocityDividerName } = require("./utils");
-const { generateConfig, staticConfig, colorPalettePicker } = require("./utils/config");
-const { FXRandomBetween, FXRandomIntBetween, FXRandomBool } = require("./utils/fxrandHelper");
-import "p5";
-import { params } from "./utils/params";
-
-var num = 4500;
 var finishIn = 0;
 var ticks = 0;
-var particles = [num];
+let weight = 0;
+let lineThickness = 0;
 
-let circleRadius = 2.5;
-let circlePadding = 1;
+let circleRadius = 1;
 
 $fx.params(params);
 
@@ -77,40 +21,48 @@ window.setup = () => {
   const sketchCanvas = createCanvas(staticConfig.canvasWidth, staticConfig.canvasHeight);
 
   config = generateConfig(sketchCanvas);
+  weight = getStrokeWeight(config.appearance).stroke;
+  lineThickness = getStrokeWeight(config.appearance).thickness;
 
   const colors = colorPalettePicker(config.paletteName);
 
+  //Set noise seeds
   noiseSeed(fxhash);
   randomSeed(fxhash);
 
+  //Set color mode
   colorMode(RGB);
 
-  // Determine the number of circles to pack into the canvas
-  let numCircles = config.noiseScale;
+  //Set up the canvas
+  frameRate(30);
 
-  // Generate random positions for the circles
+  background("#000");
+
+  strokeWeight(weight);
+
+  // Determine the number of circles to pack into the canvas
+  const numCircles = getActiveLevel(config.behaviour);
+
+  //Determine the mood for this canvas
+  mood = getMood(config.mood);
+
+  // Generate random positions and generate color variance for the circles
   for (let i = 0; i < numCircles; i++) {
     let x = FXRandomIntBetween(0, staticConfig.canvasWidth);
     let y = FXRandomIntBetween(0, staticConfig.canvasHeight);
 
     let chosenColor = colors[Math.floor(FXRandomIntBetween(0, colors.length))];
 
-    let variation = Math.floor(Math.random() * 50) - 12.5;
+    let variation = Math.floor(Math.random() * 25) - mood;
+
     let r = Math.max(0, Math.min(255, red(chosenColor) + variation));
     let g = Math.max(0, Math.min(255, green(chosenColor) + variation));
     let b = Math.max(0, Math.min(255, blue(chosenColor) + variation));
+
     chosenColor = color(r, g, b);
 
-    positions.push({ x: x, y: y, color: chosenColor });
+    positions.push({ x: x / 4, y: y / 2, color: chosenColor });
   }
-
-  frameRate(config.frameRate);
-
-  background("#000");
-
-  strokeWeight(config.strokeWeight);
-
-  finishIn = config.finishIn;
 
   flowField = createFlowField();
 };
@@ -122,25 +74,35 @@ function createFlowField() {
     flowField[x] = [];
 
     for (let y = 0; y < staticConfig.canvasHeight / 2; y++) {
-      let noiseValue = noise(x * config.noiseStrength, y * config.noiseStrength);
+      const noiseStrength = getCurvature(config.curvature);
+
+      let noiseValue = noise(x * noiseStrength, y * noiseStrength);
 
       let angle = noiseValue * PI * 2;
 
-      const shouldFlip = config.shouldFlip;
+      if (config.movement === "eratic") {
+        const dir = FXRandomBool(0.7);
 
-      if (shouldFlip) {
-        const dir = FXRandomBool(0.9);
         if (dir) {
           const flipper = FXRandomBool(0.9);
 
           if (flipper) {
             flowField[x][y] = { x: Math.cos(angle), y: Math.sin(angle) };
           } else {
-            flowField[x][y] = { x: Math.atan(2), y: Math.acos(200) };
+            flowField[x][y] = { x: Math.atan(angle), y: Math.acos(angle) };
           }
         } else {
           flowField[x][y] = { x: Math.tan(angle), y: Math.cos(angle) };
         }
+      } else if (config.movement === "rounded") {
+        flowField[x][y] = {
+          y: x / (staticConfig.canvasWidth / FXRandomIntBetween(20, 30)) / PI,
+          x: y / (staticConfig.canvasHeight / FXRandomIntBetween(20, 30)) / PI,
+        };
+      } else if (config.movement === "burst") {
+        flowField[x][y] = { y: x / 1.5, x: y / Math.tan(2) };
+      } else if (config.movement === "stretch") {
+        flowField[x][y] = { x: Math.tan(angle), y: Math.sin(angle) };
       } else {
         flowField[x][y] = { x: Math.cos(angle), y: Math.sin(angle) };
       }
@@ -152,27 +114,48 @@ function createFlowField() {
 
 // Draw the circles onto the canvas, using the Perlin noise flow field to guide their movement
 function drawCircles() {
-  let lineThickness = config.lineThickness;
-
   for (let i = 0; i < positions.length; i++) {
     let pos = positions[i];
 
-    let x = Math.floor(pos.x / circleRadius / 4);
-    let y = Math.floor(pos.y / circleRadius / 4);
+    let x = Math.ceil(pos.x / 1.8 / 4);
+    let y = Math.ceil(pos.y / 1.8 / 4);
 
     let force = flowField[x][y];
 
-    pos.x += (force.x / config.noiseMultiplier) * config.speed;
-    pos.y -= (force.y / config.noiseMultiplier) * config.speed;
+    let speed = getSpeed(config.speed);
+
+    const noiseMultiplier = getNoiseMultiplier(config.noiseMultiplier);
+
+    const randy = FXRandomBool(0.5);
+
+    if (config.noiseMultiplier === "flow") {
+      speed = speed * PI;
+    }
+
+    if (config.noiseMultiplier === "granular") {
+      speed = speed * HALF_PI;
+    }
+
+    if (config.noiseMultiplier === "sharp") {
+      speed = speed * 1.2;
+    }
+
+    if (randy) {
+      pos.x += (force.x / noiseMultiplier) * speed;
+      pos.y -= (force.y / noiseMultiplier) * speed;
+    } else {
+      pos.x -= (force.x / noiseMultiplier) * speed;
+      pos.y += (force.y / noiseMultiplier) * speed;
+    }
 
     if (pos.x >= 40 && pos.x <= staticConfig.canvasWidth - 40 && pos.y >= 40 && pos.y <= staticConfig.canvasHeight - 40) {
-      stroke(pos.color, 55);
+      stroke(pos.color);
 
-      strokeWeight(config.strokeWeight);
       line(pos.x, pos.y, pos.x + lineThickness, pos.y + lineThickness);
+
       stroke(0);
-      const thicknessMul = FXRandomIntBetween(1, 2);
-      line(pos.x + lineThickness * thicknessMul, pos.y + lineThickness * thicknessMul, pos.x + lineThickness * thicknessMul, pos.y + lineThickness * thicknessMul);
+
+      line(pos.x + lineThickness + 1, pos.y + lineThickness + 1, pos.x + lineThickness + 1, pos.y + lineThickness + 1);
     } else {
       positions.splice(i, 1);
       i--;
@@ -185,11 +168,10 @@ window.draw = () => {
 
   ticks++;
 
-  if (config.lineThickness > 4 && ticks >= 2500) {
-    noLoop();
-    fxpreview();
-  } else if (ticks >= 3000) {
-    noLoop();
+  if (ticks >= 1500) {
+    if (!config.infinite) {
+      noLoop();
+    }
     fxpreview();
   }
 };
