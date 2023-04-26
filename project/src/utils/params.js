@@ -12,7 +12,7 @@ const params = [
     name: "Behaviour",
     type: "select",
     options: {
-      options: ["lively", "serene", "tranquil"],
+      options: ["lively", "bustling", "serene", "tranquil"],
     },
   },
   {
@@ -44,7 +44,7 @@ const params = [
     name: "Palette",
     type: "select",
     options: {
-      options: ["1350", "water", "kandinsky", "chagall", "pissaro", "fearnley", "kusama", "anguissola"],
+      options: ["1350", "water", "kandinsky", "chagall", "pissaro", "fearnley", "kusama", "anguissola", "monochrome"],
     },
   },
   {

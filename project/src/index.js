@@ -51,17 +51,19 @@ window.setup = () => {
     let x = FXRandomIntBetween(0, staticConfig.canvasWidth);
     let y = FXRandomIntBetween(0, staticConfig.canvasHeight);
 
-    let chosenColor = colors[Math.floor(FXRandomIntBetween(0, colors.length))];
+    let { chosenColor, promenance } = colors[Math.floor(FXRandomIntBetween(0, colors.length))];
 
     let variation = Math.floor(Math.random() * 25) - mood;
 
-    let r = Math.max(0, Math.min(255, red(chosenColor) + variation));
-    let g = Math.max(0, Math.min(255, green(chosenColor) + variation));
-    let b = Math.max(0, Math.min(255, blue(chosenColor) + variation));
+    const mappedPromenance = map(promenance, 0, 100, 0, 255);
+
+    let r = Math.max(0, Math.min(mappedPromenance, red(chosenColor.r) + variation));
+    let g = Math.max(0, Math.min(mappedPromenance, green(chosenColor.g) + variation));
+    let b = Math.max(0, Math.min(mappedPromenance, blue(chosenColor.b) + variation));
 
     chosenColor = color(r, g, b);
 
-    positions.push({ x: x / 4, y: y / 2, color: chosenColor });
+    positions.push({ x, y, color: chosenColor });
   }
 
   flowField = createFlowField();
@@ -126,7 +128,11 @@ function drawCircles() {
 
     const noiseMultiplier = getNoiseMultiplier(config.noiseMultiplier);
 
-    const randy = FXRandomBool(0.5);
+    let forceFlip = FXRandomBool(0.75);
+
+    if (config.movement === "stretch") {
+      forceFlip = FXRandomBool(0.9);
+    }
 
     if (config.noiseMultiplier === "flow") {
       speed = speed * PI;
@@ -140,7 +146,7 @@ function drawCircles() {
       speed = speed * 1.2;
     }
 
-    if (randy) {
+    if (forceFlip) {
       pos.x += (force.x / noiseMultiplier) * speed;
       pos.y -= (force.y / noiseMultiplier) * speed;
     } else {

@@ -34,6 +34,8 @@ export const getActiveLevel = (behaviour) => {
   switch (behaviour) {
     case "lively":
       return FXRandomIntBetween(6000, 7000);
+    case "bustling":
+      return FXRandomBetween(3000, 5000);
     case "serene":
       return FXRandomIntBetween(1000, 1500);
     case "tranquil":
@@ -69,13 +71,13 @@ export const getSpeed = (speed) => {
 export const getMood = (mood) => {
   switch (mood) {
     case "moody":
-      return 75;
+      return 1.0;
     case "broody":
-      return 50;
+      return 0.8;
     case "happy":
-      return 25;
+      return 0.5;
     case "bright":
-      return 5;
+      return 0.1;
   }
 };
 
@@ -132,111 +134,652 @@ export const generateConfig = () => {
   return config;
 };
 
+//1 is bright, 100 is muted
 export const colorPalettePicker = (paletteName) => {
-  // #Define the renaissance-era color palette
-  let renaissance = [
-    color(197, 159, 80), // Gold
-    color(196, 30, 58), // Vermilion
-    color(26, 36, 84), // Ultramarine
-    color(105, 50, 110), // Mauve
-    color(160, 72, 45), // Ochre
-    color(221, 207, 160), // Pale Yellow
-    color(206, 138, 25), // Burnt Orange
-    color(84, 47, 15), // Burnt Umber
-    color(214, 121, 140), // Rose
-    color(66, 58, 76), // Payne's Grey
+  const renWithPres = [
+    {
+      chosenColor: {
+        // Gold
+        r: 197,
+        g: 159,
+        b: 80,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Vermilion
+        r: 196,
+        g: 30,
+        b: 58,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Ultramarine
+        r: 26,
+        g: 36,
+        b: 84,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Mauve
+        r: 105,
+        g: 50,
+        b: 110,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Ochre
+        r: 160,
+        g: 72,
+        b: 45,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Pale Yellow
+        r: 221,
+        g: 207,
+        b: 160,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Burnt Orange
+        r: 206,
+        g: 138,
+        b: 25,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Burnt Umber
+        r: 84,
+        g: 47,
+        b: 15,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Rose
+        r: 214,
+        g: 121,
+        b: 140,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        // Payne's Grey
+        r: 66,
+        g: 58,
+        b: 76,
+      },
+      promenance: 25,
+    },
+  ];
+
+  const monochrome = [
+    {
+      chosenColor: {
+        r: 0,
+        g: 0,
+        b: 0,
+      },
+      promenance: 25,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+      promenance: 75,
+    },
+    {
+      chosenColor: {
+        r: 128,
+        g: 0,
+        b: 255,
+      },
+      promenance: 10,
+    },
   ];
 
   let bluePalette = [
-    color(28, 72, 138), // A darker, navy blue
-    color(31, 97, 141), // A medium, deep blue
-    color(77, 166, 211), // A brighter, light blue
-    color(174, 219, 237), // A very light, pastel blue
-    color(226, 240, 246), // A very light, almost white blue
+    {
+      chosenColor: {
+        r: 28,
+        g: 72,
+        b: 138,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 31,
+        g: 97,
+        b: 141,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 77,
+        g: 166,
+        b: 211,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 174,
+        g: 219,
+        b: 237,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 226,
+        g: 240,
+        b: 246,
+      },
+      promenance: 100,
+    },
   ];
 
   let deepKandinskyPalette = [
-    color(63, 74, 129), // blue
-    color(225, 214, 201), // light beige
-    color(138, 17, 22), // dark red
-    color(168, 172, 161), // light greenish-gray
-    color(238, 232, 225), // off-white
-    color(215, 206, 185), // beige
-    color(220, 207, 157), // light brown
-    color(128, 84, 46), // dark brown
-    color(10, 9, 11), // black
+    {
+      chosenColor: {
+        r: 63,
+        g: 74,
+        b: 129,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 225,
+        g: 214,
+        b: 201,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 138,
+        g: 17,
+        b: 22,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 168,
+        g: 172,
+        b: 161,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 238,
+        g: 232,
+        b: 225,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 215,
+        g: 206,
+        b: 185,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 220,
+        g: 207,
+        b: 157,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 128,
+        g: 84,
+        b: 46,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 10,
+        g: 9,
+        b: 11,
+      },
+      promenance: 100,
+    },
   ];
 
   let chagallPalette = [
-    color(72, 98, 142), // Blue
-    color(161, 95, 62), // Orange
-    color(44, 67, 115), // Indigo
-    color(226, 153, 50), // Yellow
-    color(153, 63, 80), // Red
-    color(119, 142, 63), // Green
-    color(234, 196, 217), // Pink
-    color(102, 102, 102), // Gray
+    {
+      chosenColor: {
+        r: 72,
+        g: 98,
+        b: 142,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 161,
+        g: 95,
+        b: 62,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 44,
+        g: 67,
+        b: 115,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 226,
+        g: 153,
+        b: 50,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 153,
+        g: 63,
+        b: 80,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 119,
+        g: 142,
+        b: 63,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 234,
+        g: 196,
+        b: 217,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 102,
+        g: 102,
+        b: 102,
+      },
+      promenance: 100,
+    },
   ];
 
   let murakamiPalette = [
-    color(255, 187, 0), // Yellow
-    color(255, 87, 51), // Red
-    color(0, 166, 150), // Teal
-    color(255, 140, 178), // Pink
-    color(0, 130, 200), // Blue
-    color(255, 170, 0), // Orange
-    color(102, 204, 0), // Green
-    color(255, 255, 255), // White
+    {
+      chosenColor: {
+        r: 255,
+        g: 187,
+        b: 0,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 87,
+        b: 51,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 0,
+        g: 166,
+        b: 150,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 140,
+        b: 178,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 0,
+        g: 130,
+        b: 200,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 170,
+        b: 0,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 102,
+        g: 204,
+        b: 0,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+      promenance: 100,
+    },
   ];
 
   let pissarroPalette = [
-    color(206, 218, 229, 255), // #CEDAE5
-    color(153, 156, 142, 255), // #999C8E
-    color(66, 85, 76, 90), // #42554C
-    color(124, 138, 101, 255), // #7C8A65
-    color(246, 247, 242, 255), // #F6F7F2
-    color(254, 229, 167, 255), // #FEE5A7
-    color(175, 173, 159, 255), // #AFAD9F
+    {
+      chosenColor: {
+        r: 206,
+        g: 218,
+        b: 229,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 153,
+        g: 156,
+        b: 142,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 66,
+        g: 85,
+        b: 76,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 124,
+        g: 138,
+        b: 101,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 246,
+        g: 247,
+        b: 242,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 254,
+        g: 229,
+        b: 167,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 175,
+        g: 173,
+        b: 159,
+      },
+      promenance: 100,
+    },
   ];
 
   let fearnleyPalette = [
-    color(121, 131, 144, 90), // #798390
-    color(111, 119, 130, 90), // #6F7782
-    color(243, 201, 100, 255), // #F3C964
-    color(255, 191, 80, 255), // #FFBF50
-    color(247, 191, 82, 255), // #F7BF52
+    {
+      chosenColor: {
+        r: 121,
+        g: 131,
+        b: 144,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 111,
+        g: 119,
+        b: 130,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 243,
+        g: 201,
+        b: 100,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 191,
+        b: 80,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 247,
+        g: 191,
+        b: 82,
+      },
+      promenance: 100,
+    },
   ];
 
   let kusamaColors = [
-    color(255, 0, 0), // red
-    color(255, 255, 0), // yellow
-    color(0, 255, 255), // cyan
-    color(255, 0, 255), // magenta
-    color(255, 255, 255), // white
-    color(255, 128, 0), // orange
-    color(0, 255, 0), // green
-    color(128, 0, 255), // purple
-    color(255, 0, 128), // pink
-    color(0, 0, 0), // black
+    {
+      chosenColor: {
+        r: 255,
+        g: 0,
+        b: 0,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 255,
+        b: 0,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 0,
+        g: 255,
+        b: 255,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 0,
+        b: 255,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 128,
+        b: 0,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 0,
+        g: 255,
+        b: 0,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 128,
+        g: 0,
+        b: 255,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 0,
+        b: 128,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 0,
+        g: 0,
+        b: 0,
+      },
+      promenance: 100,
+    },
   ];
 
   let anguissolaColors = [
-    color(255, 204, 204), // light pink
-    color(255, 153, 204), // pink
-    color(204, 255, 204), // light green
-    color(153, 255, 204), // green
-    color(204, 204, 255), // light blue
-    color(153, 204, 255), // blue
-    color(255, 204, 153), // peach
-    color(255, 255, 204), // light yellow
-    color(255, 102, 102), // red
-    color(102, 102, 102), // gray
+    {
+      chosenColor: {
+        r: 255,
+        g: 204,
+        b: 204,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 153,
+        b: 204,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 204,
+        g: 255,
+        b: 204,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 153,
+        g: 255,
+        b: 204,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 204,
+        g: 204,
+        b: 255,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 153,
+        g: 204,
+        b: 255,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 204,
+        b: 153,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 255,
+        b: 204,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 255,
+        g: 102,
+        b: 102,
+      },
+      promenance: 100,
+    },
+    {
+      chosenColor: {
+        r: 102,
+        g: 102,
+        b: 102,
+      },
+      promenance: 100,
+    },
   ];
 
   const palettes = [
     {
       name: "1350",
-      colors: renaissance,
+      colors: renWithPres,
     },
     {
       name: "water",
@@ -269,6 +812,10 @@ export const colorPalettePicker = (paletteName) => {
     {
       name: "anguissola",
       colors: anguissolaColors,
+    },
+    {
+      name: "monochrome",
+      colors: monochrome,
     },
   ];
 
