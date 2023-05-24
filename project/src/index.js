@@ -1,14 +1,11 @@
-const { generateConfig, staticConfig, colorPalettePicker, getNoiseMultiplier, getCurvature, getActiveLevel, getSpeed, getStrokeWeight, getMood, getBase } = require("./utils/config");
-const { FXRandomIntBetween, FXRandomBool, FXRandomBetween } = require("./utils/fxrandHelper");
+const { generateConfig, staticConfig, colorPalettePicker, getNoiseMultiplier, getCurvature, getActiveLevel, getSpeed, getStrokeWeight, getMood } = require("./utils/config");
+const { FXRandomIntBetween, FXRandomBool } = require("./utils/fxrandHelper");
 const { params } = require("./utils/params");
 require("p5");
 
-var finishIn = 0;
 var ticks = 0;
 let weight = 0;
 let lineThickness = 0;
-
-let circleRadius = 1;
 
 $fx.params(params);
 
